@@ -1,3 +1,5 @@
+import { Logger } from './Logger.js';
+
 export class PathManager {
     constructor(scene, gridManager) {
         this.scene = scene;
@@ -12,6 +14,7 @@ export class PathManager {
         if (!cell.dotColor && !cell.pathColor) return;
 
         this.currentColor = cell.dotColor || cell.pathColor;
+        Logger.gameEvent('path.start', { color: this.currentColor, x: cell.x, y: cell.y });
         
         // If it's a path color, we might be starting from a middle of a path
         // or re-starting a path.
@@ -77,6 +80,9 @@ export class PathManager {
     }
 
     endPath() {
+        if (this.currentColor) {
+            Logger.gameEvent('path.end', { color: this.currentColor, length: this.currentPath ? this.currentPath.length : 0 });
+        }
         this.currentPath = null;
         this.currentColor = null;
         this.scene.events.emit('path-completed');
@@ -84,6 +90,7 @@ export class PathManager {
 
     clearPath(color) {
         if (this.paths.has(color)) {
+            Logger.gameEvent('path.clear', { color: color });
             this.clearPathCells(this.paths.get(color));
             this.paths.delete(color);
         }

@@ -1,8 +1,8 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-03-11T02:00:00.000Z",
-  "activeFeatures": ["link-dots"],
-  "primaryFeature": "link-dots",
+  "lastUpdated": "2026-03-11T03:00:00.000Z",
+  "activeFeatures": ["level-system-expansion"],
+  "primaryFeature": "level-system-expansion",
   "features": {
     "link-dots": {
       "phase": "report",
@@ -12,22 +12,30 @@
       "analysisPath": "docs/03-analysis/link-dots.analysis.md",
       "reportPath": "docs/04-report/link-dots.report.md",
       "matchRate": 98
+    },
+    "level-system-expansion": {
+      "phase": "report",
+      "status": "completed",
+      "planPath": "docs/01-plan/features/level-system-expansion.plan.md",
+      "designPath": "docs/02-design/features/level-system-expansion.design.md",
+      "analysisPath": "docs/03-analysis/level-system-expansion.analysis.md",
+      "reportPath": "docs/04-report/level-system-expansion.report.md",
+      "matchRate": 100
     }
   },
   "pipeline": {
     "currentPhase": 6,
     "level": "Starter",
     "phaseHistory": [
-      { "phase": 1, "completedAt": "2026-03-11T00:55:00.000Z" },
-      { "phase": 2, "completedAt": "2026-03-11T01:00:00.000Z" },
-      { "phase": 3, "completedAt": "2026-03-11T01:15:00.000Z" },
-      { "phase": 4, "completedAt": "2026-03-11T01:30:00.000Z" },
-      { "phase": 5, "completedAt": "2026-03-11T01:45:00.000Z" }
+      { "phase": 1, "completedAt": "2026-03-11T02:15:00.000Z" },
+      { "phase": 2, "completedAt": "2026-03-11T02:20:00.000Z" },
+      { "phase": 3, "completedAt": "2026-03-11T02:35:00.000Z" },
+      { "phase": 4, "completedAt": "2026-03-11T02:45:00.000Z" }
     ]
   },
   "session": {
     "startedAt": "2026-03-11T00:45:05.695Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-03-11T02:00:00.000Z"
+    "lastActivity": "2026-03-11T03:00:00.000Z"
   }
 }

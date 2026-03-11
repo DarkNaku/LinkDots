@@ -5,8 +5,8 @@ const config = {
     title: 'LinkDots',
     description: 'Flow Free Clone',
     parent: 'game-container',
-    width: 600,
-    height: 800,
+    width: 640,
+    height: 1136,
     backgroundColor: '#000000',
     pixelArt: false,
     scene: [

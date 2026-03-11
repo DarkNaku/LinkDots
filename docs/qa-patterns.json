@@ -1,0 +1,25 @@
+{
+  "project": "LinkDots",
+  "qa_method": "Zero Script QA",
+  "features": [
+    {
+      "name": "level-progression",
+      "description": "레벨 시작 및 완료 흐름 검증",
+      "expected_patterns": [
+        { "level": "info", "event": "level.start" },
+        { "level": "info", "event": "path.start" },
+        { "level": "info", "event": "path.end" },
+        { "level": "info", "event": "level.win" }
+      ]
+    },
+    {
+      "name": "path-integrity",
+      "description": "경로 생성 및 교차 로직 검증",
+      "expected_patterns": [
+        { "event": "path.start" },
+        { "event": "path.clear" },
+        { "event": "path.end" }
+      ]
+    }
+  ]
+}
