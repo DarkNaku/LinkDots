@@ -1,0 +1,33 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2026-03-11T02:00:00.000Z",
+  "activeFeatures": ["link-dots"],
+  "primaryFeature": "link-dots",
+  "features": {
+    "link-dots": {
+      "phase": "report",
+      "status": "completed",
+      "planPath": "docs/01-plan/features/link-dots.plan.md",
+      "designPath": "docs/02-design/features/link-dots.design.md",
+      "analysisPath": "docs/03-analysis/link-dots.analysis.md",
+      "reportPath": "docs/04-report/link-dots.report.md",
+      "matchRate": 98
+    }
+  },
+  "pipeline": {
+    "currentPhase": 6,
+    "level": "Starter",
+    "phaseHistory": [
+      { "phase": 1, "completedAt": "2026-03-11T00:55:00.000Z" },
+      { "phase": 2, "completedAt": "2026-03-11T01:00:00.000Z" },
+      { "phase": 3, "completedAt": "2026-03-11T01:15:00.000Z" },
+      { "phase": 4, "completedAt": "2026-03-11T01:30:00.000Z" },
+      { "phase": 5, "completedAt": "2026-03-11T01:45:00.000Z" }
+    ]
+  },
+  "session": {
+    "startedAt": "2026-03-11T00:45:05.695Z",
+    "onboardingCompleted": true,
+    "lastActivity": "2026-03-11T02:00:00.000Z"
+  }
+}
