@@ -27,7 +27,10 @@ export class MainScene extends Phaser.Scene {
 
         if (!this.levelData) return;
 
-        this.gridSize = 400;
+        const { width, height } = this.cameras.main;
+        
+        // Dynamic Grid Size based on screen width
+        this.gridSize = Math.min(width * 0.85, 600); 
         this.gridManager = new GridManager(this, this.levelData.size, this.gridSize);
         this.pathManager = new PathManager(this, this.gridManager);
         this.uiManager = new UIManager(this);
@@ -40,11 +43,11 @@ export class MainScene extends Phaser.Scene {
         // UI Initialized
         this.uiManager.createHUD(this.packData.name, this.levelData.id, this.moves, 0);
         
-        this.uiManager.createBackButton(() => {
+        this.uiManager.createCircularBackButton(() => {
             this.scene.start('LevelSelectScene', { packIndex: this.packIndex });
         });
 
-        this.uiManager.createButton(this.cameras.main.width / 2, this.cameras.main.height - 80, 'RESET', () => {
+        this.uiManager.createButton(width / 2, height * 0.88, 'RESET', () => {
             this.pathManager.reset();
             this.moves = 0;
             this.updateHUD();
