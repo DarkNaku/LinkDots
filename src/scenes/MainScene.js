@@ -33,6 +33,7 @@ export class MainScene extends Phaser.Scene {
         this.gridSize = Math.min(width * 0.85, 600); 
         this.gridManager = new GridManager(this, this.levelData.size, this.gridSize);
         this.pathManager = new PathManager(this, this.gridManager);
+        this.pathManager.graphics.setDepth(5);
         this.uiManager = new UIManager(this);
         this.moves = 0;
         this.isLevelComplete = false;

@@ -108,7 +108,17 @@ export class PathManager {
         this.paths.forEach((cells, color) => {
             if (cells.length < 2) return;
             
-            this.graphics.lineStyle(15, color, 1);
+            const thickness = cells[0].size * 0.45;
+            const radius = thickness / 2;
+
+            // 1. Draw joints (Circles) at every cell position
+            this.graphics.fillStyle(color, 1);
+            cells.forEach(cell => {
+                this.graphics.fillCircle(cell.worldX, cell.worldY, radius);
+            });
+
+            // 2. Draw segments (Lines) between joints
+            this.graphics.lineStyle(thickness, color, 1);
             this.graphics.beginPath();
             this.graphics.moveTo(cells[0].worldX, cells[0].worldY);
             
