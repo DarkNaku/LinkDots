@@ -32,12 +32,18 @@ export class MainScene extends Phaser.Scene {
         this.pathManager = new PathManager(this, this.gridManager);
         this.uiManager = new UIManager(this);
         this.moves = 0;
+        this.isLevelComplete = false;
 
         this.initDots();
         this.gridManager.draw();
         
         // UI Initialized
         this.uiManager.createHUD(this.packData.name, this.levelData.id, this.moves, 0);
+        
+        this.uiManager.createBackButton(() => {
+            this.scene.start('LevelSelectScene', { packIndex: this.packIndex });
+        });
+
         this.uiManager.createButton(this.cameras.main.width / 2, this.cameras.main.height - 80, 'RESET', () => {
             this.pathManager.reset();
             this.moves = 0;
@@ -46,6 +52,8 @@ export class MainScene extends Phaser.Scene {
 
         this.setupInputs();
         this.setupEvents();
+
+        this.cameras.main.fadeIn(500, 0, 0, 0);
     }
 
     setupInputs() {
@@ -123,8 +131,14 @@ export class MainScene extends Phaser.Scene {
     showWinMessage() {
         Logger.gameEvent('level.win', { moves: this.moves, flow: 100 });
         const isLastLevel = (this.levelIndex + 1 >= this.packData.levels.length);
-        this.uiManager.showWinOverlay(isLastLevel, () => {
-            this.scene.restart({ packIndex: this.packIndex, levelIndex: this.levelIndex + 1 });
-        });
+        this.uiManager.showWinOverlay(
+            isLastLevel, 
+            () => {
+                this.scene.restart({ packIndex: this.packIndex, levelIndex: this.levelIndex + 1 });
+            },
+            () => {
+                this.scene.start('LevelSelectScene', { packIndex: this.packIndex });
+            }
+        );
     }
 }

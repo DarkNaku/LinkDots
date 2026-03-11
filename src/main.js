@@ -1,3 +1,6 @@
+import { TitleScene } from './scenes/TitleScene.js';
+import { PackSelectScene } from './scenes/PackSelectScene.js';
+import { LevelSelectScene } from './scenes/LevelSelectScene.js';
 import { MainScene } from './scenes/MainScene.js';
 
 const config = {
@@ -5,11 +8,14 @@ const config = {
     title: 'LinkDots',
     description: 'Flow Free Clone',
     parent: 'game-container',
-    width: 640,
-    height: 1136,
+    width: 600,
+    height: 800,
     backgroundColor: '#000000',
     pixelArt: false,
     scene: [
+        TitleScene,
+        PackSelectScene,
+        LevelSelectScene,
         MainScene
     ],
     scale: {
