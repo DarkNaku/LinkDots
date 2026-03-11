@@ -16,17 +16,12 @@ export class UIManager {
         }).setOrigin(0.5);
     }
 
-    createMultiColorTitle(x, y, parts) {
+    createMultiColorTitle(x, y, parts, fontSize = '54px') {
         const container = this.scene.add.container(x, y);
-        let currentX = 0;
-        
-        // Calculate total width to center it manually if needed, 
-        // but here we assume x is the start or center.
-        // Let's calculate total width first.
         let totalWidth = 0;
         const textObjects = parts.map(part => {
             const txt = this.scene.add.text(0, 0, part.text, {
-                fontSize: '54px',
+                fontSize: fontSize,
                 fill: part.color,
                 fontStyle: 'bold'
             }).setOrigin(0, 0.5);
@@ -52,8 +47,106 @@ export class UIManager {
         }).setOrigin(0.5);
     }
 
+    createIconButton(x, y, icon, callback) {
+        const btn = this.scene.add.text(x, y, icon, {
+            fontSize: '32px',
+            fill: '#FFF'
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+        btn.on('pointerdown', callback);
+        return btn;
+    }
+
+    createBadge(x, y, text, color) {
+        const container = this.scene.add.container(x, y);
+        const bg = this.scene.add.graphics();
+        const w = 50;
+        const h = 30;
+        
+        bg.fillStyle(color, 1);
+        // Draw a simple ribbon/badge shape
+        bg.beginPath();
+        bg.moveTo(-w/2, -h/2);
+        bg.lineTo(w/2, -h/2);
+        bg.lineTo(w/2 + 10, 0);
+        bg.lineTo(w/2, h/2);
+        bg.lineTo(-w/2, h/2);
+        bg.lineTo(-w/2 - 10, 0);
+        bg.closePath();
+        bg.fillPath();
+
+        const txt = this.scene.add.text(0, 0, text, {
+            fontSize: '20px',
+            fill: '#FFF',
+            fontStyle: 'bold'
+        }).setOrigin(0.5);
+
+        container.add([bg, txt]);
+        return container;
+    }
+
+    createMenuListItem(y, text, rightElement, callback) {
+        const container = this.scene.add.container(0, y);
+        
+        const label = this.scene.add.text(80, 0, text, {
+            fontSize: '42px',
+            fill: '#FFF'
+        }).setOrigin(0, 0.5);
+
+        container.add(label);
+
+        if (rightElement) {
+            if (typeof rightElement === 'string') {
+                const icon = this.scene.add.text(this.width - 100, 0, rightElement, {
+                    fontSize: '42px',
+                    fill: '#FFF'
+                }).setOrigin(1, 0.5);
+                container.add(icon);
+            } else {
+                rightElement.setPosition(this.width - 100, 0);
+                container.add(rightElement);
+            }
+        }
+
+        const hitArea = this.scene.add.rectangle(this.width / 2, 0, this.width, 80, 0xffffff, 0).setInteractive({ useHandCursor: true });
+        container.add(hitArea);
+
+        hitArea.on('pointerdown', () => {
+            this.scene.tweens.add({
+                targets: container,
+                scale: 0.98,
+                duration: 50,
+                yoyo: true,
+                onComplete: callback
+            });
+        });
+
+        return container;
+    }
+
+    createUtilityButton(x, y, icon, text, callback) {
+        const container = this.scene.add.container(x, y);
+        
+        const iconTxt = this.scene.add.text(0, -20, icon, {
+            fontSize: '32px',
+            fill: '#FFF'
+        }).setOrigin(0.5);
+
+        const labelTxt = this.scene.add.text(0, 20, text, {
+            fontSize: '20px',
+            fill: '#FFF'
+        }).setOrigin(0.5);
+
+        container.add([iconTxt, labelTxt]);
+
+        const hitArea = this.scene.add.rectangle(0, 0, 120, 80, 0xffffff, 0).setInteractive({ useHandCursor: true });
+        container.add(hitArea);
+
+        hitArea.on('pointerdown', callback);
+        return container;
+    }
+
     createHUD(packName, levelId, moves, flow) {
-        // Title with Neon Style
         this.texts.set('title', this.scene.add.text(this.width / 2, 50, `${packName} - Level ${levelId}`, {
             fontSize: '32px',
             fill: '#00F0FF',
@@ -62,7 +155,6 @@ export class UIManager {
             strokeThickness: 4
         }).setOrigin(0.5));
 
-        // Stats Container
         this.texts.set('moves', this.scene.add.text(this.width / 2 - 100, 110, `Moves: ${moves}`, {
             fontSize: '24px',
             fill: '#FFFFFF'
