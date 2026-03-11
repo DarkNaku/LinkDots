@@ -16,6 +16,34 @@ export class UIManager {
         }).setOrigin(0.5);
     }
 
+    createMultiColorTitle(x, y, parts) {
+        const container = this.scene.add.container(x, y);
+        let currentX = 0;
+        
+        // Calculate total width to center it manually if needed, 
+        // but here we assume x is the start or center.
+        // Let's calculate total width first.
+        let totalWidth = 0;
+        const textObjects = parts.map(part => {
+            const txt = this.scene.add.text(0, 0, part.text, {
+                fontSize: '54px',
+                fill: part.color,
+                fontStyle: 'bold'
+            }).setOrigin(0, 0.5);
+            totalWidth += txt.width;
+            return txt;
+        });
+
+        let startX = -totalWidth / 2;
+        textObjects.forEach((txt, i) => {
+            txt.x = startX;
+            startX += txt.width;
+            container.add(txt);
+        });
+
+        return container;
+    }
+
     createSubTitle(text, y = 150) {
         return this.scene.add.text(this.width / 2, y, text, {
             fontSize: '36px',
@@ -163,6 +191,60 @@ export class UIManager {
             this.scene.tweens.add({
                 targets: container,
                 scale: 0.9,
+                duration: 50,
+                yoyo: true,
+                onComplete: callback
+            });
+        });
+
+        return container;
+    }
+
+    createSectionHeader(y, text, color) {
+        const bg = this.scene.add.graphics();
+        bg.fillStyle(color, 1);
+        bg.fillRect(0, y - 22, this.width, 45);
+
+        const txt = this.scene.add.text(20, y, text, {
+            fontSize: '24px',
+            fill: '#FFF',
+            fontStyle: 'bold'
+        }).setOrigin(0, 0.5);
+
+        return { bg, txt };
+    }
+
+    createPackListItem(y, name, progress, color, callback) {
+        const container = this.scene.add.container(0, y);
+        
+        const nameTxt = this.scene.add.text(20, 0, name, {
+            fontSize: '28px',
+            fill: color,
+            fontStyle: 'bold'
+        }).setOrigin(0, 0.5);
+
+        const progressTxt = this.scene.add.text(this.width - 20, 0, progress, {
+            fontSize: '28px',
+            fill: '#FFF'
+        }).setOrigin(1, 0.5);
+
+        container.add([nameTxt, progressTxt]);
+
+        const hitArea = this.scene.add.rectangle(this.width / 2, 0, this.width, 60, 0xffffff, 0).setInteractive({ useHandCursor: true });
+        container.add(hitArea);
+
+        hitArea.on('pointerover', () => {
+            nameTxt.setAlpha(0.8);
+            progressTxt.setAlpha(0.8);
+        });
+        hitArea.on('pointerout', () => {
+            nameTxt.setAlpha(1);
+            progressTxt.setAlpha(1);
+        });
+        hitArea.on('pointerdown', () => {
+            this.scene.tweens.add({
+                targets: container,
+                scale: 0.98,
                 duration: 50,
                 yoyo: true,
                 onComplete: callback

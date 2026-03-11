@@ -2,40 +2,57 @@
   "packs": [
     {
       "name": "클래식 팩",
+      "category": "소개",
+      "themeColor": "0x00FF00",
+      "headerColor": "0x008800",
       "levels": [
-        {
-          "id": 1,
-          "size": 5,
-          "dots": [
-            { "color": "0xFF0000", "positions": [[0, 0], [4, 0]] },
-            { "color": "0x00FF00", "positions": [[0, 1], [4, 1]] },
-            { "color": "0x0000FF", "positions": [[0, 2], [4, 2]] },
-            { "color": "0xFFFF00", "positions": [[0, 3], [4, 3]] },
-            { "color": "0xFF00FF", "positions": [[0, 4], [4, 4]] }
-          ]
-        },
-        {
-          "id": 2,
-          "size": 5,
-          "dots": [
-            { "color": "0xFF0000", "positions": [[0, 0], [2, 1]] },
-            { "color": "0x00FF00", "positions": [[0, 1], [4, 0]] },
-            { "color": "0x0000FF", "positions": [[0, 2], [4, 1]] },
-            { "color": "0xFFFF00", "positions": [[0, 3], [4, 2]] },
-            { "color": "0xFF00FF", "positions": [[0, 4], [4, 4]] }
-          ]
-        },
-        {
-          "id": 3,
-          "size": 5,
-          "dots": [
-            { "color": "0xFF0000", "positions": [[0, 0], [1, 2]] },
-            { "color": "0x00FF00", "positions": [[2, 0], [4, 0]] },
-            { "color": "0x0000FF", "positions": [[2, 1], [4, 4]] },
-            { "color": "0xFFFF00", "positions": [[0, 4], [2, 4]] },
-            { "color": "0xFF00FF", "positions": [[3, 3], [1, 4]] }
-          ]
-        }
+        { "id": 1, "size": 5, "dots": [ { "color": "0xFF0000", "positions": [[0, 0], [4, 4]] }, { "color": "0x00FF00", "positions": [[0, 4], [4, 0]] } ] },
+        { "id": 2, "size": 5, "dots": [ { "color": "0xFF0000", "positions": [[0, 0], [2, 1]] }, { "color": "0x00FF00", "positions": [[0, 1], [4, 0]] } ] }
+      ]
+    },
+    {
+      "name": "보너스 팩",
+      "category": "소개",
+      "themeColor": "0x00FF00",
+      "headerColor": "0x008800",
+      "levels": [
+        { "id": 1, "size": 5, "dots": [ { "color": "0xFF0000", "positions": [[0, 0], [1, 1]] } ] }
+      ]
+    },
+    {
+      "name": "6x6 마니아",
+      "category": "마니아",
+      "themeColor": "0xFF0000",
+      "headerColor": "0x880000",
+      "levels": [
+        { "id": 1, "size": 6, "dots": [ { "color": "0xFF0000", "positions": [[0, 0], [5, 5]] } ] }
+      ]
+    },
+    {
+      "name": "7x7 마니아",
+      "category": "마니아",
+      "themeColor": "0xFF0000",
+      "headerColor": "0x880000",
+      "levels": [
+        { "id": 1, "size": 7, "dots": [ { "color": "0xFF0000", "positions": [[0, 0], [6, 6]] } ] }
+      ]
+    },
+    {
+      "name": "8x8 마니아",
+      "category": "마니아",
+      "themeColor": "0xFF0000",
+      "headerColor": "0x880000",
+      "levels": [
+        { "id": 1, "size": 8, "dots": [ { "color": "0xFF0000", "positions": [[0, 0], [7, 7]] } ] }
+      ]
+    },
+    {
+      "name": "레인보우 팩",
+      "category": "진행",
+      "themeColor": "0x0000FF",
+      "headerColor": "0x000088",
+      "levels": [
+        { "id": 1, "size": 5, "dots": [ { "color": "0xFF0000", "positions": [[0, 0], [1, 1]] } ] }
       ]
     }
   ]
