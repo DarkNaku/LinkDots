@@ -27,8 +27,22 @@ export class GridManager {
 
     draw() {
         this.graphics.clear();
-        this.graphics.lineStyle(2, 0x333333, 1);
-        
+
+        // 1. Draw Cell Backgrounds (Glow effect)
+        for (let y = 0; y < this.size; y++) {
+            for (let x = 0; x < this.size; x++) {
+                const cell = this.cells[y][x];
+                if (cell.pathColor) {
+                    const bx = this.offsetX + x * this.cellSize;
+                    const by = this.offsetY + y * this.cellSize;
+                    this.graphics.fillStyle(cell.pathColor, 0.2);
+                    this.graphics.fillRect(bx, by, this.cellSize, this.cellSize);
+                }
+            }
+        }
+
+        // 2. Draw Grid Lines
+        this.graphics.lineStyle(2, 0x333333, 0.5);
         for (let y = 0; y <= this.size; y++) {
             const py = this.offsetY + y * this.cellSize;
             this.graphics.moveTo(this.offsetX, py);
@@ -57,12 +71,7 @@ export class GridManager {
     isAllFilled() {
         for (let y = 0; y < this.size; y++) {
             for (let x = 0; x < this.size; x++) {
-                if (!this.cells[y][x].isOccupied && !this.cells[y][x].dotColor) {
-                    return false;
-                }
-                // Dots are also part of occupancy in Flow Free logic, 
-                // but let's be precise: every cell must have a pathColor or dotColor.
-                if (!this.cells[y][x].pathColor && !this.cells[y][x].dotColor) {
+                if (!this.cells[y][x].isOccupied) {
                     return false;
                 }
             }
@@ -75,7 +84,7 @@ export class GridManager {
         const total = this.size * this.size;
         for (let y = 0; y < this.size; y++) {
             for (let x = 0; x < this.size; x++) {
-                if (this.cells[y][x].isOccupied || this.cells[y][x].dotColor) {
+                if (this.cells[y][x].isOccupied) {
                     occupied++;
                 }
             }

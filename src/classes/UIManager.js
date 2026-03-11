@@ -146,34 +146,73 @@ export class UIManager {
         return container;
     }
 
-    createHUD(packName, levelId, moves, flow) {
-        const titleY = this.height * 0.05;
-        const statsY = this.height * 0.1;
+    createGameHeader(levelId, size, backCallback, settingsCallback) {
+        // Back Button
+        this.createCircularBackButton(backCallback);
 
-        this.texts.set('title', this.scene.add.text(this.width / 2, titleY, `${packName} - Level ${levelId}`, {
+        // Level Info
+        const infoX = this.width / 2;
+        const infoY = this.height * 0.08;
+        
+        const levelText = this.scene.add.text(infoX - 40, infoY, `레벨 ${levelId}`, {
+            fontSize: '42px',
+            fill: '#00FF00',
+            fontStyle: 'bold'
+        }).setOrigin(1, 0.5);
+
+        const sizeText = this.scene.add.text(infoX - 20, infoY, `${size}x${size}`, {
             fontSize: '36px',
-            fill: '#00F0FF',
-            fontStyle: 'bold',
-            stroke: '#005050',
-            strokeThickness: 4
-        }).setOrigin(0.5));
-
-        this.texts.set('moves', this.scene.add.text(this.width / 2 - 120, statsY, `Moves: ${moves}`, {
-            fontSize: '28px',
             fill: '#FFFFFF'
-        }).setOrigin(0.5));
+        }).setOrigin(0, 0.5);
 
-        this.texts.set('flow', this.scene.add.text(this.width / 2 + 120, statsY, `Flow: ${flow}%`, {
-            fontSize: '28px',
-            fill: '#FFFFFF'
-        }).setOrigin(0.5));
+        // Settings Icon
+        this.createIconButton(this.width - 70, infoY, '⚙️', settingsCallback);
+    }
+
+    createStatsBar(y) {
+        const statsY = y;
+        const fontSize = '24px';
+        const fill = '#FFFFFF';
+
+        this.texts.set('flow', this.scene.add.text(30, statsY, '흐름: 0/0', { fontSize, fill }).setOrigin(0, 0.5));
+        this.texts.set('moves', this.scene.add.text(this.width / 2, statsY, '무브: 0 최고: -', { fontSize, fill }).setOrigin(0.5, 0.5));
+        this.texts.set('pipe', this.scene.add.text(this.width - 30, statsY, '파이프: 0%', { fontSize, fill }).setOrigin(1, 0.5));
+    }
+
+    updateStats(connected, total, moves, best, pipe) {
+        const flowTxt = this.texts.get('flow');
+        const movesTxt = this.texts.get('moves');
+        const pipeTxt = this.texts.get('pipe');
+
+        if (flowTxt) flowTxt.setText(`흐름: ${connected}/${total}`);
+        if (movesTxt) movesTxt.setText(`무브: ${moves} 최고: ${best || '-'}`);
+        if (pipeTxt) pipeTxt.setText(`파이프: ${pipe}%`);
+    }
+
+    createGameControls(callbacks) {
+        const bottomY = this.height * 0.85;
+        
+        // Undo
+        this.createIconButton(this.width * 0.15, bottomY, '↩️', callbacks.undo);
+        
+        // Hint (Bulb)
+        const hintBtn = this.createIconButton(this.width / 2, bottomY, '💡', callbacks.hint);
+        hintBtn.setFontSize('64px');
+        
+        // Hint Badge
+        this.createBadge(this.width / 2 - 40, bottomY + 20, '+ 3', '#444');
+
+        // Reset
+        this.createIconButton(this.width * 0.85, bottomY, '🔄', callbacks.reset);
+    }
+
+    // Legacy method for compatibility during transition
+    createHUD(packName, levelId, moves, flow) {
+        // This will be replaced by createGameHeader and createStatsBar in MainScene
     }
 
     updateHUD(moves, flow) {
-        const movesText = this.texts.get('moves');
-        const flowText = this.texts.get('flow');
-        if (movesText) movesText.setText(`Moves: ${moves}`);
-        if (flowText) flowText.setText(`Flow: ${flow}%`);
+        // This will be replaced by updateStats in MainScene
     }
 
     createButton(x, y, text, callback) {

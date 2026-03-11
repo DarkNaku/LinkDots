@@ -6,7 +6,7 @@
       "themeColor": "0x00FF00",
       "headerColor": "0x008800",
       "levels": [
-        { "id": 1, "size": 5, "dots": [ { "color": "0xFF0000", "positions": [[0, 0], [4, 4]] }, { "color": "0x00FF00", "positions": [[0, 4], [4, 0]] } ] },
+        { "id": 1, "size": 5, "dots": [ { "color": "0xFF0000", "positions": [[0, 0], [4, 0]] }, { "color": "0x00FF00", "positions": [[0, 1], [4, 1]] }, { "color": "0x0000FF", "positions": [[0, 2], [4, 2]] }, { "color": "0xFFFF00", "positions": [[0, 3], [4, 3]] }, { "color": "0x00FFFF", "positions": [[0, 4], [4, 4]] } ] },
         { "id": 2, "size": 5, "dots": [ { "color": "0xFF0000", "positions": [[0, 0], [2, 1]] }, { "color": "0x00FF00", "positions": [[0, 1], [4, 0]] } ] }
       ]
     },

@@ -73,6 +73,10 @@ export class PathManager {
 
         this.paths.set(this.currentColor, this.currentPath);
         
+        if (this.currentPath.length === 2) {
+            this.scene.events.emit('path-extended-first', this.currentColor);
+        }
+        
         // If we reached the target dot, end the path
         if (cell.dotColor === this.currentColor && cell !== this.currentPath[0]) {
             this.endPath();
@@ -82,6 +86,11 @@ export class PathManager {
     endPath() {
         if (this.currentColor) {
             Logger.gameEvent('path.end', { color: this.currentColor, length: this.currentPath ? this.currentPath.length : 0 });
+            
+            // If the path is incomplete (less than 2 nodes), clear it
+            if (this.currentPath && this.currentPath.length < 2) {
+                this.clearPath(this.currentColor);
+            }
         }
         this.currentPath = null;
         this.currentColor = null;

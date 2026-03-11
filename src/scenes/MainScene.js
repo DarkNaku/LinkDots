@@ -29,30 +29,49 @@ export class MainScene extends Phaser.Scene {
 
         const { width, height } = this.cameras.main;
         
-        // Dynamic Grid Size based on screen width
+        // 1. Initialize Managers
         this.gridSize = Math.min(width * 0.85, 600); 
         this.gridManager = new GridManager(this, this.levelData.size, this.gridSize);
         this.pathManager = new PathManager(this, this.gridManager);
         this.pathManager.graphics.setDepth(5);
         this.uiManager = new UIManager(this);
+        
+        // Touch Highlight Circle
+        this.touchHighlight = this.add.circle(0, 0, this.gridManager.cellSize * 0.4, 0xffffff, 0.35);
+        this.touchHighlight.setVisible(false);
+        this.touchHighlight.setDepth(15);
+        
         this.moves = 0;
+        this.lastMovedColor = null;
         this.isLevelComplete = false;
 
-        this.initDots();
-        this.gridManager.draw();
-        
-        // UI Initialized
-        this.uiManager.createHUD(this.packData.name, this.levelData.id, this.moves, 0);
-        
-        this.uiManager.createCircularBackButton(() => {
+        // 2. Setup UI
+        this.uiManager.createGameHeader(this.levelData.id, this.levelData.size, () => {
             this.scene.start('LevelSelectScene', { packIndex: this.packIndex });
+        }, () => {
+            console.log('Settings clicked');
         });
 
-        this.uiManager.createButton(width / 2, height * 0.88, 'RESET', () => {
-            this.pathManager.reset();
-            this.moves = 0;
-            this.updateHUD();
+        // Calculate Stats Bar Y (above grid)
+        const statsY = this.gridManager.offsetY - 40;
+        this.uiManager.createStatsBar(statsY);
+
+        this.uiManager.createGameControls({
+            undo: () => console.log('Undo'),
+            hint: () => console.log('Hint'),
+            reset: () => {
+                this.pathManager.reset();
+                this.moves = 0;
+                this.lastMovedColor = null;
+                this.updateHUD();
+                this.gridManager.draw();
+            }
         });
+
+        // 3. Initialize Game Board
+        this.initDots();
+        this.gridManager.draw();
+        this.updateHUD();
 
         this.setupInputs();
         this.setupEvents();
@@ -64,7 +83,17 @@ export class MainScene extends Phaser.Scene {
         this.input.on('pointerdown', (pointer) => {
             if (this.isLevelComplete) return;
             const cell = this.gridManager.getCellByWorldPos(pointer.x, pointer.y);
-            if (cell) this.pathManager.startPath(cell);
+            if (cell) {
+                this.pathManager.startPath(cell);
+                this.updateHUD();
+                this.gridManager.draw();
+
+                if (this.pathManager.currentColor) {
+                    this.touchHighlight.setFillStyle(this.pathManager.currentColor, 0.35);
+                    this.touchHighlight.setPosition(pointer.x, pointer.y);
+                    this.touchHighlight.setVisible(true);
+                }
+            }
         });
 
         this.input.on('pointermove', (pointer) => {
@@ -74,17 +103,29 @@ export class MainScene extends Phaser.Scene {
                 if (cell) {
                     this.pathManager.extendPath(cell);
                     this.updateHUD();
+                    this.gridManager.draw();
+                }
+                if (this.touchHighlight.visible) {
+                    this.touchHighlight.setPosition(pointer.x, pointer.y);
                 }
             }
         });
 
-        this.input.on('pointerup', () => this.pathManager.endPath());
+        this.input.on('pointerup', () => {
+            this.pathManager.endPath();
+            this.updateHUD();
+            this.gridManager.draw();
+            this.touchHighlight.setVisible(false);
+        });
     }
 
     setupEvents() {
-        this.events.on('path-started', () => {
-            this.moves++;
-            this.updateHUD();
+        this.events.on('path-extended-first', (color) => {
+            if (this.lastMovedColor !== color) {
+                this.moves++;
+                this.lastMovedColor = color;
+                this.updateHUD();
+            }
         }, this);
         this.events.on('path-completed', this.checkWinCondition, this);
     }
@@ -95,7 +136,7 @@ export class MainScene extends Phaser.Scene {
                 const cell = this.gridManager.cells[pos[1]][pos[0]];
                 cell.dotColor = dot.color;
                 
-                const dotObj = this.add.circle(cell.worldX, cell.worldY, cell.size * 0.35, dot.color);
+                const dotObj = this.add.circle(cell.worldX, cell.worldY, cell.size * 0.35, dot.color).setDepth(10);
                 this.tweens.add({
                     targets: dotObj,
                     scale: 1.1,
@@ -113,20 +154,35 @@ export class MainScene extends Phaser.Scene {
     }
 
     updateHUD() {
-        this.uiManager.updateHUD(this.moves, this.gridManager.getFillPercentage());
-    }
-
-    checkWinCondition() {
-        const allDotsConnected = this.levelData.dots.every(dot => {
+        const connectedCount = this.levelData.dots.filter(dot => {
             const path = this.pathManager.paths.get(dot.color);
             if (!path || path.length < 2) return false;
             const startCell = this.gridManager.cells[dot.positions[0][1]][dot.positions[0][0]];
             const endCell = this.gridManager.cells[dot.positions[1][1]][dot.positions[1][0]];
             return (path[0] === startCell && path[path.length - 1] === endCell) ||
                    (path[0] === endCell && path[path.length - 1] === startCell);
-        });
+        }).length;
 
-        if (allDotsConnected && this.gridManager.isAllFilled()) {
+        this.uiManager.updateStats(
+            connectedCount, 
+            this.levelData.dots.length, 
+            this.moves, 
+            null, 
+            this.gridManager.getFillPercentage()
+        );
+    }
+
+    checkWinCondition() {
+        const connectedCount = this.levelData.dots.filter(dot => {
+            const path = this.pathManager.paths.get(dot.color);
+            if (!path || path.length < 2) return false;
+            const startCell = this.gridManager.cells[dot.positions[0][1]][dot.positions[0][0]];
+            const endCell = this.gridManager.cells[dot.positions[1][1]][dot.positions[1][0]];
+            return (path[0] === startCell && path[path.length - 1] === endCell) ||
+                   (path[0] === endCell && path[path.length - 1] === startCell);
+        }).length;
+
+        if (connectedCount === this.levelData.dots.length && this.gridManager.isAllFilled()) {
             this.isLevelComplete = true;
             this.showWinMessage();
         }
