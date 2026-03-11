@@ -6,13 +6,21 @@ export class UIManager {
         this.texts = new Map();
     }
 
-    createTitle(text) {
+    createTitle(text, color = '#00F0FF') {
         return this.scene.add.text(this.width / 2, 80, text, {
             fontSize: '42px',
-            fill: '#00F0FF',
+            fill: color,
             fontStyle: 'bold',
             stroke: '#005050',
             strokeThickness: 6
+        }).setOrigin(0.5);
+    }
+
+    createSubTitle(text, y = 150) {
+        return this.scene.add.text(this.width / 2, y, text, {
+            fontSize: '36px',
+            fill: '#FFFFFF',
+            fontStyle: 'normal'
         }).setOrigin(0.5);
     }
 
@@ -83,19 +91,32 @@ export class UIManager {
         return btn;
     }
 
-    createGridButton(x, y, text, callback) {
-        const size = 60;
-        const btnBg = this.scene.add.rectangle(x, y, size, size, 0x1A1A40).setInteractive({ useHandCursor: true });
-        const btnText = this.scene.add.text(x, y, text, {
-            fontSize: '24px',
-            fill: '#FFF'
+    createCircularBackButton(callback) {
+        const x = 55;
+        const y = 80;
+        const radius = 24;
+        
+        const container = this.scene.add.container(x, y);
+        const bg = this.scene.add.graphics();
+        bg.lineStyle(3, 0xFFFFFF, 1);
+        bg.strokeCircle(0, 0, radius);
+        
+        const arrow = this.scene.add.text(0, 0, '<', {
+            fontSize: '28px',
+            fill: '#FFF',
+            fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        btnBg.on('pointerover', () => btnBg.setFillStyle(0x2A2A60));
-        btnBg.on('pointerout', () => btnBg.setFillStyle(0x1A1A40));
-        btnBg.on('pointerdown', () => {
+        container.add([bg, arrow]);
+        
+        const hitArea = this.scene.add.circle(0, 0, radius).setInteractive({ useHandCursor: true });
+        container.add(hitArea);
+
+        hitArea.on('pointerover', () => arrow.setFill('#00FF00'));
+        hitArea.on('pointerout', () => arrow.setFill('#FFFFFF'));
+        hitArea.on('pointerdown', () => {
             this.scene.tweens.add({
-                targets: [btnBg, btnText],
+                targets: container,
                 scale: 0.9,
                 duration: 50,
                 yoyo: true,
@@ -103,7 +124,62 @@ export class UIManager {
             });
         });
 
-        return btnBg;
+        return container;
+    }
+
+    createStyledGridButton(x, y, text, color, isCompleted, callback) {
+        const size = 64;
+        const container = this.scene.add.container(x, y);
+        
+        const bg = this.scene.add.graphics();
+        if (isCompleted) {
+            bg.fillStyle(color, 1);
+            bg.fillRect(-size / 2, -size / 2, size, size);
+        } else {
+            bg.lineStyle(2, color, 1);
+            bg.strokeRect(-size / 2, -size / 2, size, size);
+        }
+
+        const btnText = this.scene.add.text(0, 0, text, {
+            fontSize: '28px',
+            fill: '#FFF'
+        }).setOrigin(0.5);
+
+        container.add([bg, btnText]);
+        
+        const hitArea = this.scene.add.rectangle(0, 0, size, size).setInteractive({ useHandCursor: true });
+        container.add(hitArea);
+
+        hitArea.on('pointerover', () => {
+            if (!isCompleted) bg.lineStyle(3, color, 1).strokeRect(-size / 2, -size / 2, size, size);
+        });
+        hitArea.on('pointerout', () => {
+            if (!isCompleted) {
+                bg.clear();
+                bg.lineStyle(2, color, 1).strokeRect(-size / 2, -size / 2, size, size);
+            }
+        });
+        hitArea.on('pointerdown', () => {
+            this.scene.tweens.add({
+                targets: container,
+                scale: 0.9,
+                duration: 50,
+                yoyo: true,
+                onComplete: callback
+            });
+        });
+
+        return container;
+    }
+
+    createPagination(total, current) {
+        const startX = (this.width - (total - 1) * 20) / 2;
+        const y = 740;
+        
+        for (let i = 0; i < total; i++) {
+            const dot = this.scene.add.circle(startX + i * 20, y, 4, 0xFFFFFF);
+            dot.setAlpha(i === current ? 1 : 0.4);
+        }
     }
 
     showWinOverlay(isLastLevel, nextCallback, menuCallback) {
